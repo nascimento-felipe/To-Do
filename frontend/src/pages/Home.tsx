@@ -46,6 +46,10 @@ export default function Home() {
 
     console.log(task);
 
+    // api.post("/task", {
+
+    // })
+
     try {
       const response = await fetch("http://localhost:8080/task", {
         method: "POST",
@@ -62,6 +66,10 @@ export default function Home() {
         console.log("Error submitting data");
         window.alert(await response.text());
       }
+
+      setTitle("");
+      setDescription("");
+      setDueDate(Date());
     } catch (error) {
       console.log(`Erro: ${error}`);
     }
@@ -84,6 +92,7 @@ export default function Home() {
               className="rounded-md bg-light_grey p-2 text-slate-700 w-full"
               placeholder="Nome do item"
               value={title}
+              required
               onChange={(text) => {
                 setTitle(text.target.value);
               }}
@@ -96,6 +105,7 @@ export default function Home() {
               className="mt-2 rounded-md bg-light_grey p-2 text-slate-700 w-full"
               placeholder="Ex.: Comprar refrigerante"
               value={description}
+              required
               onChange={(text) => {
                 setDescription(text.target.value);
               }}
@@ -130,7 +140,7 @@ export default function Home() {
               key={i}
               mensagem={task.taskDescription}
               titulo={task.taskName}
-              data={task.dueDate}
+              data={new Date(task.dueDate)}
             />
           );
         })}
