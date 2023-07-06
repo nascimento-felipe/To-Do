@@ -6,6 +6,7 @@
 package com.sapecas.ToDoList;
 
 import jakarta.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,14 @@ public class TaskService {
     @Transactional
     void delete(TaskModel task) {
         taskDAO.delete(task);
+    }
+
+    List<TaskModel> findByName(String taskName) {
+        return taskDAO.findByTaskNameContainingIgnoreCase(taskName);
+    }
+
+    List<TaskModel> findByDescription(String taskDescription) {
+        return taskDAO.findByTaskDescriptionContainingIgnoreCase(taskDescription);
     }
 
 }

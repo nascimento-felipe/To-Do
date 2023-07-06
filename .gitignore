@@ -1,2 +1,4 @@
 
 ToDoList/src/main/resources/application.properties
+ToDoList/src/main/resources/application.properties
+*.properties

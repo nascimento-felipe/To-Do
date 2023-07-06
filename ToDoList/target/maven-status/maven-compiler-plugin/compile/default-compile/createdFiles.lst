@@ -1,6 +1,6 @@
-com/sapecas/ToDoList/TaskController.class
-com/sapecas/ToDoList/TaskRepository.class
-com/sapecas/ToDoList/ToDoListApplication.class
-com/sapecas/ToDoList/TaskModel.class
-com/sapecas/ToDoList/TaskService.class
-com/sapecas/ToDoList/TaskDTO.class
+com\sapecas\ToDoList\TaskController.class
+com\sapecas\ToDoList\TaskModel.class
+com\sapecas\ToDoList\TaskRepository.class
+com\sapecas\ToDoList\ToDoListApplication.class
+com\sapecas\ToDoList\TaskDTO.class
+com\sapecas\ToDoList\TaskService.class

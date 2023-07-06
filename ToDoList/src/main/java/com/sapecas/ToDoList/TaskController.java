@@ -1,6 +1,7 @@
 package com.sapecas.ToDoList;
 
 import jakarta.validation.Valid;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.beans.BeanUtils;
@@ -30,7 +31,7 @@ public class TaskController {
     TaskService taskService;
 
     @GetMapping
-    public ResponseEntity<Page<TaskModel>> getAllTasks(@PageableDefault(page=0, size=5, direction=Sort.Direction.ASC, sort="dueDate") Pageable pageable) {
+    public ResponseEntity<Page<TaskModel>> getAllTasks(@PageableDefault(page = 0, size = 99, direction = Sort.Direction.ASC, sort = "dueDate") Pageable pageable) {
         return ResponseEntity.status(HttpStatus.OK).body(taskService.findAll(pageable));
     }
 
@@ -44,18 +45,14 @@ public class TaskController {
     @GetMapping("/{id}")
     public ResponseEntity<Object> getTask(@PathVariable UUID id) {
         Optional<TaskModel> optionalTask = taskService.getTask(id);
-        if (!optionalTask.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Not found");
-        }
+        if (!optionalTask.isPresent()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Not found");
         return ResponseEntity.status(HttpStatus.OK).body(taskService.getTask(id).get());
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> delete(@PathVariable UUID id) {
         Optional<TaskModel> optionalTask = taskService.getTask(id);
-        if (!optionalTask.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Not found");
-        }
+        if (!optionalTask.isPresent()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Not found");
         taskService.delete(optionalTask.get());
         return ResponseEntity.status(HttpStatus.OK).body("Task deleted");
     }
@@ -63,14 +60,24 @@ public class TaskController {
     @PutMapping("/{id}")
     public ResponseEntity<Object> update(@PathVariable UUID id, @RequestBody @Valid TaskDTO taskDTO) {
         Optional<TaskModel> task = taskService.getTask(id);
-        if (!task.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Not found");
-        }
+        if (!task.isPresent()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Not found");
         var newTask = new TaskModel();
         BeanUtils.copyProperties(taskDTO, newTask);
         newTask.setId(task.get().getId());
         return ResponseEntity.status(HttpStatus.OK).body(taskService.save(newTask));
 
+    }
+
+    @GetMapping("/taskname/{taskName}")
+    public ResponseEntity<List<TaskModel>> getByName(@PathVariable String taskName) {
+        List<TaskModel> tasks = taskService.findByName(taskName);
+        return ResponseEntity.status(HttpStatus.OK).body(tasks);
+    }
+    
+    @GetMapping("/taskdescription/{taskDescription}")
+    public ResponseEntity<List<TaskModel>> getByDescription(@PathVariable String taskDescription) {
+        List<TaskModel> tasks = taskService.findByDescription(taskDescription);
+        return ResponseEntity.status(HttpStatus.OK).body(tasks);
     }
 
 }
