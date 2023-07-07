@@ -6,12 +6,14 @@ interface ContextMenuProps {
   x: number;
   y: number;
   closeContextMenu: () => void;
+  deleteItem: () => void;
 }
 
 export default function ContextMenu({
   x,
   y,
   closeContextMenu,
+  deleteItem,
 }: ContextMenuProps) {
   const contextMenuRef = useRef<HTMLDivElement>(null);
   useOnClickOutside(contextMenuRef, closeContextMenu);
@@ -22,15 +24,21 @@ export default function ContextMenu({
       className="absolute z-20 flex flex-col bg-elevated rounded-md"
       ref={contextMenuRef}
     >
-      <div className="flex flex-row p-2 hover:rounded-md hover:bg-green-600 transition-all">
+      <button
+        className="flex flex-row p-2 hover:rounded-md hover:bg-green-600 transition-all"
+        onClick={deleteItem}
+      >
         <Check size={24} className="mr-5" />
         <h1>Concluir tarefa</h1>
-      </div>
+      </button>
 
-      <div className="flex flex-row p-2 mt-2 hover:rounded-md hover:bg-red-600 transition-all">
+      <button
+        className="flex flex-row p-2 mt-2 hover:rounded-md hover:bg-red-600 transition-all"
+        onClick={deleteItem}
+      >
         <Trash size={24} className="mr-5" />
         <h1>Deletar tarefa</h1>
-      </div>
+      </button>
     </div>
   );
 }

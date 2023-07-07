@@ -41,8 +41,9 @@ bash /home/lama/Downloads/apache-maven-3.9.3-bin/apache-maven-3.9.3/bin/mvn spri
 ## Coisas pra fazer aqui no front
 
 - [x] Mostrar a data de forma bonita
-- [/] Deletar um novo dado
+- [x] Deletar um novo dado
 - [ ] Paginacao
+- [ ] Mensagem de erro se o banco nao estiver up
 
 ## Melhorar
 

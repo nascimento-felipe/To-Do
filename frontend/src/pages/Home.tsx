@@ -4,6 +4,7 @@ import Item from "../components/Item";
 import { api } from "../lib/axios";
 
 type Task = Array<{
+  id?: string;
   taskName: string;
   taskDescription: string;
   dueDate: string;
@@ -22,6 +23,30 @@ export default function Home() {
   const [listaTasks, setListaTasks] = useState<Task>([]);
 
   useEffect(() => {
+    loadTasks();
+  }, []);
+
+  async function handleSubmit(event: FormEvent) {
+    event.preventDefault();
+
+    try {
+      const resultado = await api.post("/task", {
+        taskName: title,
+        taskDescription: description,
+        dueDate: dueDate,
+      });
+
+      if (resultado) {
+        alert("Nova task adicionada!");
+        return;
+      } else {
+      }
+    } catch (error) {
+      console.log(`Erro: ${error}`);
+    }
+  }
+
+  function loadTasks() {
     api
       .get("/task", {
         params: {
@@ -31,48 +56,7 @@ export default function Home() {
       })
       .then((response) => {
         setListaTasks(response.data.content);
-        console.log(data);
       });
-  }, []);
-
-  async function handleSubmit(event: FormEvent) {
-    event.preventDefault();
-    console.log(dueDate);
-    const task = {
-      taskName: title,
-      taskDescription: description,
-      dueDate: dueDate,
-    };
-
-    console.log(task);
-
-    // api.post("/task", {
-
-    // })
-
-    try {
-      const response = await fetch("http://localhost:8080/task", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(task),
-      });
-
-      if (response.ok) {
-        console.log("Data submitted successfully");
-        setListaTasks([...listaTasks, task]);
-      } else {
-        console.log("Error submitting data");
-        window.alert(await response.text());
-      }
-
-      setTitle("");
-      setDescription("");
-      setDueDate(Date());
-    } catch (error) {
-      console.log(`Erro: ${error}`);
-    }
   }
 
   return (
@@ -136,12 +120,7 @@ export default function Home() {
       <div className="mt-10 flex flex-col max-h-full min-h-[20vh] justify-evenly">
         {listaTasks.map((task, i) => {
           return (
-            <Item
-              key={i}
-              mensagem={task.taskDescription}
-              titulo={task.taskName}
-              data={new Date(task.dueDate)}
-            />
+            <Item key={i} task={task} itemDeleted={async () => loadTasks()} />
           );
         })}
       </div>
