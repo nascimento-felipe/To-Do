@@ -37,6 +37,15 @@ export default function Home() {
       });
 
       if (resultado) {
+        console.log(resultado);
+        const newTask = {
+          id: resultado.data.id,
+          taskName: title,
+          taskDescription: description,
+          dueDate: dueDate,
+        };
+
+        setListaTasks([...listaTasks, newTask]);
         alert("Nova task adicionada!");
         return;
       } else {
