@@ -1,4 +1,6 @@
+import { Pagination } from "@mui/material";
 import { Plus } from "@phosphor-icons/react";
+import dayjs from "dayjs";
 import { FormEvent, useEffect, useState } from "react";
 import Item from "../components/Item";
 import { api } from "../lib/axios";
@@ -10,17 +12,21 @@ type Task = Array<{
   dueDate: string;
 }>;
 
-let date = new Date().toJSON();
-let data = date.split(".")[0];
-data = data.slice(0, 16);
-console.log(data); // 2022-06-17T11:06:50
+const MINIMUM_DATE = dayjs(new Date()).format("YYYY-MM-DDTHH:mm");
 
 export default function Home() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [dueDate, setDueDate] = useState(Date);
 
+  const [currentPage, setCurrentPage] = useState(0);
   const [listaTasks, setListaTasks] = useState<Task>([]);
+
+  const PER_PAGE = 4;
+  const OFFSET = currentPage * PER_PAGE;
+
+  const lengthLista = listaTasks.length / PER_PAGE;
+  let count = lengthLista % 4 == 0 ? lengthLista : Math.ceil(lengthLista);
 
   useEffect(() => {
     loadTasks();
@@ -37,7 +43,6 @@ export default function Home() {
       });
 
       if (resultado) {
-        console.log(resultado);
         const newTask = {
           id: resultado.data.id,
           taskName: title,
@@ -56,16 +61,15 @@ export default function Home() {
   }
 
   function loadTasks() {
-    api
-      .get("/task", {
-        params: {
-          size: 2,
-          page: 0,
-        },
-      })
-      .then((response) => {
-        setListaTasks(response.data.content);
-      });
+    api.get("/task").then((response) => {
+      setListaTasks(response.data.content);
+    });
+  }
+
+  function handleChangePage(event: React.ChangeEvent<unknown>, page: number) {
+    const correctPage = page - 1;
+    setCurrentPage(correctPage);
+    console.log(event);
   }
 
   return (
@@ -108,7 +112,7 @@ export default function Home() {
               id="dueDate"
               type="datetime-local"
               name="dueDate"
-              min={data.toString()}
+              min={MINIMUM_DATE}
               className="text-slate-700 bg-light_grey mt-2 rounded-md p-2"
               required
               onChange={(dataEscolhida) => {
@@ -127,12 +131,23 @@ export default function Home() {
       </form>
 
       <div className="mt-10 flex flex-col max-h-full min-h-[20vh] justify-evenly">
-        {listaTasks.map((task, i) => {
+        {listaTasks.slice(OFFSET, OFFSET + 4).map((task, i) => {
           return (
             <Item key={i} task={task} itemDeleted={async () => loadTasks()} />
           );
         })}
       </div>
+
+      <Pagination
+        count={count}
+        onChange={(e, p) => {
+          handleChangePage(e, p);
+        }}
+        color="primary"
+        shape="rounded"
+        showFirstButton
+        showLastButton
+      />
     </main>
   );
 }
