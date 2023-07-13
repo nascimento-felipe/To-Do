@@ -4,6 +4,8 @@ import { useState } from "react";
 import { api } from "../lib/axios";
 import ContextMenu from "./ContextMenu";
 
+// TODO: Apagar menu apos deletar item
+
 interface ItemProps {
   task: {
     id?: string;
